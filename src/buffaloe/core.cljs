@@ -5,8 +5,7 @@
 
 (enable-console-print!)
 
-(println "Edits to dthis text shoduld show up in your developer console.")
-(println (grammar/parse '[buffalo buffalo]))
+(println "Parse result: " (grammar/parse '[buffalo buffalo buffalo]))
 
 ;; define your app data so that it doesn't get over-written on reload
 

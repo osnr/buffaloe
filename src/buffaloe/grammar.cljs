@@ -48,14 +48,14 @@
     (conso :np l np)))
 
 (def-->e determiner [det number]
-  ([[:det 'a] :singular] ['a])
+  ([[:det 'a] :singular] '[a])
   ([:epsilon :plural] [])
-  ([[:det 'the] ?any] ['the]))
+  ([[:det 'the] ?any] '[the]))
 
 (def-->e noun [n number]
-  ([[:n 'dog] :singular] ['dog])
-  ([[:n 'dogs] :plural] ['dogs])
-  ([[:n 'buffalo] ?any] ['buffalo]))
+  ([[:n 'dog] :singular] '[dog])
+  ([[:n 'dogs] :plural] '[dogs])
+  ([[:n 'buffalo] ?any] '[buffalo]))
 
 (def-->e adjective [adj]
   ([:epsilon] [])
@@ -72,7 +72,7 @@
 
 (def-->e conjunction [c]
   ([[:c 'e]] [])
-  ([[:c 'that]] ['that]))
+  ([[:c 'that]] '[that]))
 
 (def-->e verb-phrase [vp number gap tr]
   ([[:vp ?v] ?number :no-gap :intransitive]
@@ -83,11 +83,15 @@
      (verb ?v ?number :transitive)))
 
 (def-->e verb [v number tr]
-  ([[:v 'sleeps] :singular :intransitive] ['sleeps])
-  ([[:v 'sleep] :plural :intransitive] ['sleep])
-  ([[:v 'buffaloes] :singular :transitive] ['buffaloes])
-  ([[:v 'buffalo] :plural :transitive] ['buffalo]))
+  ([[:v 'sleeps] :singular :intransitive] '[sleeps])
+  ([[:v 'sleep] :plural :intransitive] '[sleep])
+  ([[:v 'buffaloes] :singular :transitive] '[buffaloes])
+  ([[:v 'buffalo] :plural :transitive] '[buffalo]))
+
+(println "Test"
+         (run* [parse-tree]
+               (noun parse-tree :plural '[dogs] [])))
 
 (defn parse [s]
-  (run 1 [parse-tree]
-       (sentence parse-tree s :no-gap [])))
+  (run* [parse-tree]
+        (sentence parse-tree :no-gap s [])))
