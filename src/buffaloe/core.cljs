@@ -1,10 +1,12 @@
 (ns ^:figwheel-always buffaloe.core
-    (:require[om.core :as om :include-macros true]
+    (:require [buffaloe.grammar :as grammar]
+              [om.core :as om :include-macros true]
               [om.dom :as dom :include-macros true]))
 
 (enable-console-print!)
 
-(println "Edits to this text should show up in your developer console.")
+(println "Edits to dthis text shoduld show up in your developer console.")
+(println (grammar/test-parse))
 
 ;; define your app data so that it doesn't get over-written on reload
 
@@ -17,5 +19,4 @@
         (dom/h1 nil (:text data)))))
   app-state
   {:target (. js/document (getElementById "app"))})
-
 
