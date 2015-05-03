@@ -1,8 +1,8 @@
 (ns buffaloe.grammar
   (:refer-clojure :exclude [==])
-  (:require [cljs.core.logic :refer [lcons conso]])
+  (:require [cljs.core.logic :refer [lcons conso succeed]])
   (:require-macros [buffaloe.dcg :refer [-->e --> def-->e]]
-                   [cljs.core.logic :refer [fresh run run* defne conde ==]]))
+                   [cljs.core.logic :refer [fresh run run* defne conde == conda]]))
 
 (declare sentence
          noun-phrase build-noun-phrase
@@ -33,14 +33,14 @@
 
 ; direct translation from http://www.swi-prolog.org/pldoc/doc/swi/library/lists.pl?show=src
 (defne deleteo [list1 elem list2]
-  ([[] _ []])
-  ([[elem . tail] del result]
-     (conde
-      [(== elem del)
-       (deleteo tail del result)]
+  ([[] _ []] succeed)
+  ([[?elem . ?tail] ?del ?result]
+     (conda
+      [(== ?elem ?del)
+       (deleteo ?tail ?del ?result)]
       [(fresh [rest]
-         (conso elem rest result)
-         (deleteo tail del rest))])))
+         (conso ?elem rest ?result)
+         (deleteo ?tail ?del rest))])))
 
 (defn build-noun-phrase [det adj n rel np]
   (fresh [l]
@@ -90,7 +90,7 @@
 
 (println "Test"
          (run* [parse-tree]
-               (noun parse-tree :plural '[dogs] [])))
+               (deleteo '[there hello hello there] 'there parse-tree)))
 
 (defn parse [s]
   (run* [parse-tree]
