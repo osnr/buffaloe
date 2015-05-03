@@ -6,7 +6,7 @@
 (enable-console-print!)
 
 (println "Edits to dthis text shoduld show up in your developer console.")
-(println (grammar/test-parse))
+(println (grammar/parse '[buffalo buffalo]))
 
 ;; define your app data so that it doesn't get over-written on reload
 
@@ -19,4 +19,3 @@
         (dom/h1 nil (:text data)))))
   app-state
   {:target (. js/document (getElementById "app"))})
-
