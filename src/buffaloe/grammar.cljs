@@ -1,8 +1,10 @@
 (ns buffaloe.grammar
   (:refer-clojure :exclude [==])
   (:require [cljs.core.logic :refer [lcons conso succeed]])
-  (:require-macros [buffaloe.dcg :refer [-->e --> def-->e]]
-                   [cljs.core.logic :refer [fresh run run* defne conde == conda]]))
+  (:require-macros [cljs.core.logic.macros
+                    :refer [fresh run run* defne conde == conda
+                            -->e --> def-->e !=
+                            trace-lvars]]))
 
 (declare sentence
          noun-phrase build-noun-phrase
@@ -31,20 +33,18 @@
        (relative rel)
        (!dcg (build-noun-phrase det adj n rel np)))))
 
-; direct translation from http://www.swi-prolog.org/pldoc/doc/swi/library/lists.pl?show=src
-(defne deleteo [list1 elem list2]
-  ([[] _ []] succeed)
-  ([[?elem . ?tail] ?del ?result]
-     (conda
-      [(== ?elem ?del)
-       (deleteo ?tail ?del ?result)]
-      [(fresh [rest]
-         (conso ?elem rest ?result)
-         (deleteo ?tail ?del rest))])))
+; from https://gist.github.com/swannodette/5384670
+(defne rember*o [x l o]
+  ([_ [] []])
+  ([_ [x . ?xs] _]
+    (rember*o x ?xs o))
+  ([_ [?y . ?xs] [?y . ?ys]]
+    (!= x ?y)
+    (rember*o x ?xs ?ys)))
 
 (defn build-noun-phrase [det adj n rel np]
   (fresh [l]
-    (deleteo [det adj n rel np] :epsilon l)
+    (rember*o :epsilon [det adj n rel] l)
     (conso :np l np)))
 
 (def-->e determiner [det number]
@@ -71,15 +71,17 @@
                     [(== gap :obj-gap)])))))
 
 (def-->e conjunction [c]
-  ([[:c 'e]] [])
+  ([[:c :e]] [])
   ([[:c 'that]] '[that]))
 
 (def-->e verb-phrase [vp number gap tr]
   ([[:vp ?v] ?number :no-gap :intransitive]
      (verb ?v ?number :intransitive))
   ([[:vp ?v ?np] ?number :no-gap :transitive]
-     (verb ?v ?number :transitive))
-  ([[:vp ?v [:np 'e]] ?number :obj-gap :transitive]
+     (verb ?v ?number :transitive)
+     (fresh [any-num]
+       (noun-phrase ?np any-num)))
+  ([[:vp ?v [:np :e]] ?number :obj-gap :transitive]
      (verb ?v ?number :transitive)))
 
 (def-->e verb [v number tr]
@@ -88,9 +90,14 @@
   ([[:v 'buffaloes] :singular :transitive] '[buffaloes])
   ([[:v 'buffalo] :plural :transitive] '[buffalo]))
 
+(println "remberallo test"
+         (run* [parse-tree]
+               (rember*o 'epsilon '[foo epsilon bar epsilon baz]
+                         parse-tree)))
+
 (println "Test"
          (run* [parse-tree]
-               (deleteo '[there hello hello there] 'there parse-tree)))
+               (build-noun-phrase :det :adj :n :rel parse-tree)))
 
 (defn parse [s]
   (run* [parse-tree]
