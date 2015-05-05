@@ -90,15 +90,6 @@
   ([[:v 'buffaloes] :singular :transitive] '[buffaloes])
   ([[:v 'buffalo] :plural :transitive] '[buffalo]))
 
-(println "remberallo test"
-         (run* [parse-tree]
-               (rember*o 'epsilon '[foo epsilon bar epsilon baz]
-                         parse-tree)))
-
-(println "Test"
-         (run* [parse-tree]
-               (build-noun-phrase :det :adj :n :rel parse-tree)))
-
 (defn parse [s]
   (run* [parse-tree]
         (sentence parse-tree :no-gap s [])))

@@ -5,7 +5,7 @@
 
 (enable-console-print!)
 
-(println "Parse result: " (grammar/parse '[buffalo buffalo buffalo]))
+(println "Parse result: " (time (grammar/parse '[buffalo buffalo buffalo buffalo buffalo])))
 
 ;; define your app data so that it doesn't get over-written on reload
 
