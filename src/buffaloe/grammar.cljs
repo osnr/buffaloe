@@ -90,6 +90,10 @@
   ([[:v 'buffaloes] :singular :transitive] '[buffaloes])
   ([[:v 'buffalo] :plural :transitive] '[buffalo]))
 
+(defn parse-1 [s]
+  (run 1 [parse-tree]
+       (sentence parse-tree :no-gap s [])))
+
 (defn parse [s]
   (run* [parse-tree]
         (sentence parse-tree :no-gap s [])))
