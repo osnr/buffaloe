@@ -9,6 +9,7 @@
                  [figwheel "0.2.7"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [sablono "0.3.4"]
+                 [cljsjs/react "0.13.1-0"]
                  [org.omcljs/om "0.8.8"]
                  [cljs.core.logic "0.1.1-SNAPSHOT"]]
 

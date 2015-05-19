@@ -2,7 +2,8 @@
     (:require [buffaloe.grammar :as grammar]
               [om.core :as om :include-macros true]
               [om.dom :as dom :include-macros true]
-              [clojure.string :as str]))
+              [clojure.string :as str]
+              [buffaloe.graph :as graph]))
 
 (enable-console-print!)
 
@@ -45,7 +46,8 @@
             (dom/div nil
               (dom/div nil (str last-parse))
               (dom/div #js {:style #js {:color "gray"}}
-                (str last-valid-parse)))))))))
+                (str last-valid-parse)))))
+        (om/build graph/parse-tree last-valid-parse)))))
 
 (om/root
   buffaloe
