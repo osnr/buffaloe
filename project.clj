@@ -9,7 +9,6 @@
                  [figwheel "0.2.7"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [sablono "0.3.4"]
-                 [cljsjs/react "0.13.1-0"]
                  [org.omcljs/om "0.8.8"]
                  [cljs.core.logic "0.1.1-SNAPSHOT"]]
 
@@ -23,7 +22,9 @@
   :cljsbuild {
     :builds [{:id "dev"
               :source-paths ["src" "dev_src"]
-              :compiler {:output-to "resources/public/js/compiled/buffaloe.js"
+              :compiler {:externs ["resources/public/js/dagre.js"
+                                   "resources/public/js/dagre-react.js"]
+                         :output-to "resources/public/js/compiled/buffaloe.js"
                          :output-dir "resources/public/js/compiled/out"
                          :optimizations :none
                          :main buffaloe.dev

@@ -1,10 +1,13 @@
-(ns buffaloe.graph
+(ns ^:figwheel-always buffaloe.graph
     (:require [om.core :as om :include-macros true]
               [om.dom :as dom :include-macros true]))
 
 (def graph (js/React.createFactory js/DagreReact.Graph))
 (def vertex (js/React.createFactory js/DagreReact.Vertex))
 (def edge (js/React.createFactory js/DagreReact.Edge))
+
+(defn parse-tree-graph [tree]
+  [()])
 
 (defn parse-tree [data owner]
   (reify
