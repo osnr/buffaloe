@@ -35,11 +35,12 @@
           (dom/button #js {:onClick #(update-buffaloe-state owner (str value " buffalo"))}
                       "+"))
 
-        (dom/input #js {:style #js {:width "500px"
-                                    :font-size "16px"
-                                    :height "25px"}
-                        :value value
-                        :onChange #(update-buffaloe-state owner (-> % .-target .-value))})
+        (dom/div nil
+          (dom/input #js {:style #js {:width "500px"
+                                      :font-size "16px"
+                                      :height "25px"}
+                          :value value
+                          :onChange #(update-buffaloe-state owner (-> % .-target .-value))}))
         (dom/div nil
           (if (= last-parse last-valid-parse)
             (str last-parse)

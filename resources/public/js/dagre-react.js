@@ -26,10 +26,10 @@ function(window, React, dagre) {
             g.setGraph({});
 
             React.Children.forEach(this.props.children, function(child) {
-                if (child.type === Vertex.type) {
+                if (child.type === Vertex) {
                     g.setNode(child.key, { label: child, width: child.props.width, height: child.props.height });
 
-                } else if (child.type === Edge.type) {
+                } else if (child.type === Edge) {
                     g.setEdge(child.props.source, child.props.target, { label: child });
                 }
             });
@@ -40,7 +40,7 @@ function(window, React, dagre) {
             // node svg elements
             var nodes = g.nodes().map(function(v) {
                 var node = g.node(v);
-                return React.addons.cloneWithProps(node.label, {
+                return React.cloneElement(node.label, {
                     x: node.x,
                     y: node.y
                 });
@@ -48,7 +48,7 @@ function(window, React, dagre) {
             });
             var edges = g.edges().map(function(e) {
                 var edge = g.edge(e);
-                return React.addons.cloneWithProps(edge.label, {
+                return React.cloneElement(edge.label, {
                     points: edge.points
                 });
             });
