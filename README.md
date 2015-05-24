@@ -4,7 +4,7 @@ How many buffalo does it take to make a valid sentence? [See for yourself.](http
 
 Based on my friend Avery Katko's Prolog grammar [buffalo.pl](https://github.com/averykatko/buffalo).
 
-<img src="screenshot.png"></img>
+<img width="500" src="screenshot.png"></img>
 
 It's written in ClojureScript with the Om library. I'll write more about this later, but there are two backend logic engines (you can choose in the upper-right):
 
@@ -23,3 +23,4 @@ It's written in ClojureScript with the Om library. I'll write more about this la
 - The program only gives you the first parse it can find at the moment.
 - There are probably parse bugs and inconsistencies between the two engines.
 - Advanced optimizations break the core.logic engine for some reason.
+- I bet we can make the Prolog engine faster! Maybe try and get the interactive prompt to talk to JS instead of just restarting the program for new input?
