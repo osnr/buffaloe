@@ -8,10 +8,10 @@
 (def vertex (js/React.createFactory js/DagreReact.Vertex))
 (def edge (js/React.createFactory js/DagreReact.Edge))
 
-(def foo (atom 0))
+(def node-id (atom 0))
 (defn parse-tree-graph [tree]
   (if (symbol? tree)
-    (let [key (str "tree-" (swap! foo inc))]
+    (let [key (str "tree-" (swap! node-id inc))]
       {:subtree
        [(vertex #js {:width 50
                      :height 50
@@ -19,16 +19,21 @@
                 (dom/text nil (str tree)))]
        :key key})
     (let [children (map parse-tree-graph (rest tree))
-          key (str "leaf-" (swap! foo inc))]
+          key (str "leaf-" (swap! node-id inc))]
       {:subtree
-       (into (mapcat :subtree children)
-             (conj (map #(edge #js {:source key
-                                    :target %})
-                        (map :key children)) ; make edges
-                   (vertex #js {:width 50
-                                :height 50
-                                :key key}
-                           (dom/text nil (str (first tree))))))
+       (into
+        (mapcat :subtree children)
+        (conj (map #(edge
+                     #js {:source key
+                          :target %
+                          :style #js {:fill "white"
+                                      :stroke "black"}})
+                   (map :key children)) ; make edges
+
+              (vertex #js {:width 50
+                           :height 50
+                           :key key}
+                      (dom/text nil (str (first tree))))))
        :key key})))
 
 (defn parse-tree [data owner]
@@ -38,6 +43,6 @@
       (dom/svg #js {:width "1000px"
                     :height "1000px"}
         (graph nil
-          (when (first data)
-            (swap! foo (fn [] 0))
-            (clj->js (:subtree (parse-tree-graph (first data))))))))))
+          (when data
+            (swap! node-id (fn [] 0))
+            (clj->js (:subtree (parse-tree-graph data)))))))))
