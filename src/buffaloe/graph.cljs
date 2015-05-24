@@ -9,13 +9,15 @@
 
 (def node-id (atom 0))
 (defn parse-tree-graph [tree]
-  (if (symbol? tree)
+  (if (or (symbol? tree)
+          (= tree :e))
     (let [key (str "tree-" (swap! node-id inc))]
       {:subtree
-       [(vertex #js {:width 20
+       [(vertex #js {:width 50
                      :height 20
                      :key key}
-                (dom/text nil (str tree)))]
+                (dom/text #js {:y 20}
+                          (str tree)))]
        :key key})
     (let [children (map parse-tree-graph (rest tree))
           key (str "leaf-" (swap! node-id inc))]
@@ -30,9 +32,11 @@
                    (map :key children)) ; make edges
 
               (vertex #js {:width 50
-                           :height 50
+                           :height 25
                            :key key}
-                      (dom/text nil (str (first tree))))))
+                      (dom/text #js {:x 15
+                                     :y 20}
+                                (str (first tree))))))
        :key key})))
 
 (defn parse-tree [data owner]
@@ -43,5 +47,6 @@
                     :height "1000px"}
         (graph nil
           (when data
+            (print data)
             (swap! node-id (fn [] 0))
             (clj->js (:subtree (parse-tree-graph data)))))))))

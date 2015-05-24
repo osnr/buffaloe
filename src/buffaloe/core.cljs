@@ -65,14 +65,15 @@
     om/IRenderState
     (render-state [this {backend :backend
                          {:keys [last-valid-parse status input]} :parse}]
-      (dom/div nil
+      (dom/div #js {:style #js {:fontFamily "Verdana"}}
         (dom/div #js {:style #js {:float "left"}}
           (dom/span nil "# buffalo: "
                     (count (filter #(= "buffalo" %)
                                    (-> input
                                        str/lower-case
                                        (str/replace "." "")
-                                       (str/split #" ")))))
+                                       (str/split #" "))))
+                    " ")
           (dom/button #js {:onClick #(update-input owner backend
                                                    (str input " buffalo"))}
                       "+"))
@@ -91,6 +92,7 @@
                                                    (-> % .-target .-value))}))
         (dom/div nil
           (dom/div #js {:style #js {:marginTop "-2px"
+                                    :marginBottom "1em"
                                     :fontSize "10px"
                                     :textAlign "right"}}
             (if (vector? status)
@@ -116,10 +118,13 @@
 
                 nil)))
           (dom/div #js {:style #js {:opacity
-                                    (if (= status :success)
+                                    (if (and (vector? status)
+                                             (= (first status) :success))
                                       1
                                       0.5)}}
-            (str last-valid-parse)
+            (dom/div #js {:style #js {:fontFamily "monospace"
+                                      :marginBottom "1em"}}
+              (str last-valid-parse))
             (om/build graph/parse-tree last-valid-parse)))))))
 
 (set! (.-onload js/document)

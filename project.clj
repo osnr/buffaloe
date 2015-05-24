@@ -43,7 +43,7 @@
 
                          :output-to "resources/public/js/compiled/buffaloe.js"
                          :main buffaloe.core                         
-                         :optimizations :advanced
+                         :optimizations :simple ; advanced doesn't quite work yet
                          :pretty-print false}}]}
 
   :figwheel {
