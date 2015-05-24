@@ -1,14 +1,7 @@
 (ns buffaloe.prolog
   (:require [clojure.zip :as zip]))
 
-(defn- new-worker []
-  (js/Worker. "js/buffalo.js"))
-
-(def worker (atom (new-worker)))
-
-(defn- reload-worker []
-  (.terminate @worker)
-  (swap! worker new-worker))
+(def worker (js/Worker. "js/buffalo.js"))
 
 (defn prolog-output->tree [output]
   (loop [remaining output
@@ -52,12 +45,12 @@
       (callback (prolog-output->tree data)))))
 
 (defn parse-1 [s callback]
-  (reload-worker)
+  (.-terminate worker)
   (let [start (js/performance.now)]
-    (set! (.-onmessage @worker)
+    (set! (.-onmessage worker)
           (fn [e]
             (on-message #(callback %
                                    (- (js/performance.now)
                                       start))
                         e)))
-    (.postMessage @worker (clj->js s))))
+    (.postMessage worker (clj->js s))))
