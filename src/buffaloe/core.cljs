@@ -58,9 +58,9 @@
     om/IInitState
     (init-state [_]
       {:backend :prolog
-       :parse {:last-valid-parse nil
-               :status nil
-               :input ""}})
+       :parse {:last-valid-parse (first (grammar/parse-1 '[buffalo buffalo buffalo]))
+               :status [:success 0]
+               :input "Buffalo buffalo buffalo."}})
 
     om/IRenderState
     (render-state [this {backend :backend
@@ -68,7 +68,11 @@
       (dom/div nil
         (dom/div #js {:style #js {:float "left"}}
           (dom/span nil "# buffalo: "
-                    (count (filter #(= "buffalo" %) (str/split (str/lower-case input) #" "))))
+                    (count (filter #(= "buffalo" %)
+                                   (-> input
+                                       str/lower-case
+                                       (str/replace "." "")
+                                       (str/split #" ")))))
           (dom/button #js {:onClick #(update-input owner backend
                                                    (str input " buffalo"))}
                       "+"))
@@ -92,7 +96,9 @@
             (if (vector? status)
               (let [[result time-elapsed] status
                     [whole decimal] (str/split (str time-elapsed) #"\.")
-                    formatted-time (str whole "." (subs decimal 0 2))]
+                    formatted-time (str whole
+                                        (when decimal
+                                          (str "." (subs decimal 0 2))))]
                 (case result
                   :success
                   (dom/span #js {:style #js {:color "green"}}
