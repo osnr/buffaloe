@@ -53,6 +53,11 @@
 
 (defn parse-1 [s callback]
   (reload-worker)
-  (set! (.-onmessage @worker)
-        #(on-message callback %))
-  (.postMessage @worker (clj->js s)))
+  (let [start (js/performance.now)]
+    (set! (.-onmessage @worker)
+          (fn [e]
+            (on-message #(callback %
+                                   (- (js/performance.now)
+                                      start))
+                        e)))
+    (.postMessage @worker (clj->js s))))
