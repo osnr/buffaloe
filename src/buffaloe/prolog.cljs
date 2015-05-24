@@ -1,7 +1,8 @@
 (ns buffaloe.prolog
   (:require [clojure.zip :as zip]))
 
-(def worker (js/Worker. "js/buffalo.js"))
+(def worker (atom (js/Worker. "js/buffalo.js")))
+(def num-queued (atom 0))
 
 ;; basic parser to convert prolog printed output into nested vectors
 (defn prolog-output->tree [output]
@@ -41,17 +42,22 @@
         nil
 
         "no."
-        (callback nil))
+        (do (swap! num-queued dec)
+            (callback nil)))
 
-      (callback (prolog-output->tree data)))))
+      (do (swap! num-queued dec)
+          (callback (prolog-output->tree data))))))
 
 (defn parse-1 [s callback]
-  (.-terminate worker)
+  (when (> @num-queued 2)
+    (.terminate @worker)
+    (swap! worker #(js/Worker. "js/buffalo.js")))
   (let [start (js/performance.now)]
-    (set! (.-onmessage worker)
+    (set! (.-onmessage @worker)
           (fn [e]
             (on-message #(callback %
                                    (- (js/performance.now)
                                       start))
                         e)))
-    (.postMessage worker (clj->js s))))
+    (.postMessage @worker (clj->js s))
+    (swap! num-queued inc)))

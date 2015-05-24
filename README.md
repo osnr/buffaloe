@@ -1,10 +1,10 @@
 # buffaloe
 
-How many buffalo does it take to make a valid sentence?
-
-<img src="screenshot.png"></img>
+How many buffalo does it take to make a valid sentence? [See for yourself.](http://dev.rsnous.com.s3-website-us-east-1.amazonaws.com/buffaloe/)
 
 Based on my friend Avery Katko's Prolog grammar [buffalo.pl](https://github.com/averykatko/buffalo).
+
+<img src="screenshot.png"></img>
 
 It's written in ClojureScript with the Om library. I'll write more about this later, but there are two backend logic engines (you can choose in the upper-right):
 
@@ -13,6 +13,8 @@ It's written in ClojureScript with the Om library. I'll write more about this la
 2. Prolog: Yes, this is actually a Prolog program running in your browser. No server at all. I [slightly modified](prolog/buffalo.pl) the original Prolog DCG code to cut out the tree drawing stuff, to reimplement some SWI Prolog standard library functions, and to accept input as command-line arguments.
 
     I came up with a [ridiculous build process](prolog/Makefile): I used [?-Prolog](http://www.call-with-current-continuation.org/prolog/README.html) to compile the Prolog to an essentially pure C program. Then I used [Emscripten](https://kripken.github.io/emscripten-site/) to compile `buffalo.c` to a JavaScript function; I take what you type in, run that function `buffalo` with your input as arguments, then intercept whatever `buffalo` prints to stdout and stderr and [parse that back into ClojureScript data structures](src/buffaloe/prolog.cljs), then graph that as I would with the core.logic output.
+
+    This engine is a lot more responsive than the core.logic engine, because the Prolog engine runs in a Web worker (another thread), while core.logic blocks the browser as it solves. I also kill the old thread if you change the input. The performance properties of the two engines are interesting: for me, core.logic is fast on small inputs, because Prolog has a lower bound of 80ms or so no matter what (startup time?), but Prolog beats it handily as the input size grows.
 
     It should be straightforward to switch buffalo.pl out for some other Prolog program and compile, so now you can turn anything that ?-Prolog accepts into a nice Web interface with a tree renderer.
 
