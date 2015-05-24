@@ -8,7 +8,7 @@
 
 (enable-console-print!)
 
-(defn update-input [owner backend new-input]
+(defn update-input! [owner backend new-input]
   (let [cleaned-input (-> new-input
                           str/trim
                           str/lower-case
@@ -62,6 +62,13 @@
                :status [:success 0]
                :input "Buffalo buffalo buffalo."}})
 
+    om/IDidUpdate
+    (did-update [this prev-props {:keys [backend]}]
+      (let [next-backend (om/get-state owner :backend)]
+        (when (not= backend next-backend)
+          (update-input! owner next-backend
+                         (om/get-state owner [:parse :input])))))
+
     om/IRenderState
     (render-state [this {backend :backend
                          {:keys [last-valid-parse status input]} :parse}]
@@ -74,8 +81,8 @@
                                        (str/replace "." "")
                                        (str/split #" "))))
                     " ")
-          (dom/button #js {:onClick #(update-input owner backend
-                                                   (str input " buffalo"))}
+          (dom/button #js {:onClick #(update-input! owner backend
+                                                    (str input " buffalo"))}
                       "+"))
         (dom/div #js {:style #js {:float "right"}}
           (dom/select #js {:value (name backend)
@@ -88,8 +95,8 @@
                                       :fontSize "16px"
                                       :height "25px"}
                           :value input
-                          :onChange #(update-input owner backend
-                                                   (-> % .-target .-value))}))
+                          :onChange #(update-input! owner backend
+                                                    (-> % .-target .-value))}))
         (dom/div nil
           (dom/div #js {:style #js {:marginTop "-2px"
                                     :marginBottom "1em"

@@ -47,6 +47,5 @@
                     :height "1000px"}
         (graph nil
           (when data
-            (print data)
             (swap! node-id (fn [] 0))
             (clj->js (:subtree (parse-tree-graph data)))))))))
