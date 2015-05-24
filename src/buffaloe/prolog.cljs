@@ -39,8 +39,20 @@
           (recur (subs remaining (count token))
                  (zip/append-child loc (symbol token)))))))) ; hack: ignore () around tokens
 
+(defn on-message [callback e]
+  (let [data (.-data e)]
+    (if-let [err (.-error data)]
+      (case err
+        "Calling stub instead of signal()"
+        nil
+
+        "no."
+        (callback nil))
+
+      (callback (prolog-output->tree data)))))
+
 (defn parse-1 [s callback]
   (reload-worker)
   (set! (.-onmessage @worker)
-        #(callback (prolog-output->tree (.-data %))))
+        #(on-message callback %))
   (.postMessage @worker (clj->js s)))

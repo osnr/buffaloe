@@ -18,8 +18,14 @@
              (om/set-state!
               owner :parse
               {:input (om/get-state owner [:parse :input])
-               :last-valid-parse parse
-               :last-parse parse})))
+               :last-valid-parse
+               (if parse
+                 parse
+                 (om/get-state owner [:parse :last-valid-parse]))
+               :last-parse
+               (if parse
+                 parse
+                 "No parse.")})))
           (om/set-state!
            owner :parse
            {:input new-value
@@ -32,10 +38,13 @@
          owner :parse
          {:input new-value
           :last-valid-parse
-          (if (= parse '())
-            (om/get-state owner :last-valid-parse)
-            parse)
-          :last-parse parse})))))
+          (if parse
+            parse
+            (om/get-state owner [:parse :last-valid-parse]))
+          :last-parse
+          (if parse
+            parse
+            "No parse.")})))))
 
 (defn buffaloe [data owner]
   (reify
@@ -69,8 +78,9 @@
                           :onChange #(update-input owner backend
                                                    (-> % .-target .-value))}))
         (dom/div nil
-          (when (not= last-parse last-valid-parse)
-            (dom/div nil (str last-parse)))
+          (dom/div #js {:style #js {:height "2em"}}
+            (when (not= last-parse last-valid-parse)
+              (str last-parse))) ; last-parse is just a string with parse status
           (dom/div #js {:style #js {:opacity
                                     (if (= last-parse last-valid-parse)
                                       1
