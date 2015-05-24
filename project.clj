@@ -23,11 +23,8 @@
   :cljsbuild {
     :builds [{:id "dev"
               :source-paths ["src" "dev_src"]
-              :compiler {:externs ["resources/public/js/dagre.js"
-                                   "resources/public/js/dagre-react.js"]
-                         :foreign-libs [{:file "resources/public/js/dagre.js"
-                                         :provides ["dagre"]}
-                                        {:file "resources/public/js/dagre-react.js"
+              :compiler {:externs ["resources/public/js/dagre-react.js"]
+                         :foreign-libs [{:file "resources/public/js/dagre-react.js"
                                          :provides ["dagre-react"]}]
 
                          :output-to "resources/public/js/compiled/buffaloe.js"
@@ -40,7 +37,11 @@
                          :cache-analysis true }}
              {:id "min"
               :source-paths ["src"]
-              :compiler {:output-to "resources/public/js/compiled/buffaloe.js"
+              :compiler {:externs ["resources/public/js/dagre-react.js"]
+                         :foreign-libs [{:file "resources/public/js/dagre-react.js"
+                                         :provides ["dagre-react"]}]
+
+                         :output-to "resources/public/js/compiled/buffaloe.js"
                          :main buffaloe.core                         
                          :optimizations :advanced
                          :pretty-print false}}]}

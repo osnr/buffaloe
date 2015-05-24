@@ -116,7 +116,9 @@
             (str last-valid-parse)
             (om/build graph/parse-tree last-valid-parse)))))))
 
-(om/root
-  buffaloe
-  (atom {}) ; unused app state
-  {:target (. js/document (getElementById "app"))})
+(set! (.-onload js/document)
+      (om/root
+       buffaloe
+       (atom {}) ; unused app state
+       {:target (. js/document (getElementById "app"))}))
+

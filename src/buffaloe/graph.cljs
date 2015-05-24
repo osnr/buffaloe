@@ -1,7 +1,6 @@
 (ns ^:figwheel-always buffaloe.graph
     (:require [om.core :as om :include-macros true]
               [om.dom :as dom :include-macros true]
-              [dagre]
               [dagre-react]))
 
 (def graph (js/React.createFactory js/DagreReact.Graph))
@@ -13,8 +12,8 @@
   (if (symbol? tree)
     (let [key (str "tree-" (swap! node-id inc))]
       {:subtree
-       [(vertex #js {:width 50
-                     :height 50
+       [(vertex #js {:width 20
+                     :height 20
                      :key key}
                 (dom/text nil (str tree)))]
        :key key})

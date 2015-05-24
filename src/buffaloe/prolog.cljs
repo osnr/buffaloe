@@ -3,6 +3,7 @@
 
 (def worker (js/Worker. "js/buffalo.js"))
 
+;; basic parser to convert prolog printed output into nested vectors
 (defn prolog-output->tree [output]
   (loop [remaining output
          loc (zip/vector-zip [])]
@@ -20,7 +21,7 @@
                        zip/right))
         ")" (recur rest-remaining
                    (let [child (first (zip/node loc))]
-                     (if (symbol? child)
+                     (if (symbol? child)  ; hack: ignore () around tokens
                        (zip/up (zip/replace loc child))
                        (zip/up loc))))
         "," (recur rest-remaining
@@ -30,7 +31,7 @@
         " " (recur rest-remaining loc)
         (let [token (re-find #"[A-Za-z]+" remaining)]
           (recur (subs remaining (count token))
-                 (zip/append-child loc (symbol token)))))))) ; hack: ignore () around tokens
+                 (zip/append-child loc (symbol token))))))))
 
 (defn on-message [callback e]
   (let [data (.-data e)]
