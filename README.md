@@ -6,9 +6,9 @@ Based on my friend Avery Katko's Prolog grammar [buffalo.pl](https://github.com/
 
 <img width="500" src="screenshot.png"></img>
 
-It's written in ClojureScript with the Om library. I'll write more about this later, but there are two backend logic engines (you can choose in the upper-right):
+It's written in ClojureScript with the Om library. I'll write more about this later (it took me a long time to find these two solutions, and I have a graveyard of things I tried that were too hard or wouldn't work), but there are two backend logic engines (you can choose in the upper-right):
 
-1. core.logic: I [rewrote buffalo.pl using core.logic's dcg package](src/buffaloe/grammar.cljs). (Actually, I had to use a [random fork](https://github.com/aamedina/cljs.core.logic) of core.logic which brings DCGs and some other stuff over to ClojureScript from the Clojure version.) Then I just call it with your input, get a parse tree, and [graph that](src/buffaloe/graph.cljs). (I wrote the [dagre-react library](https://github.com/osnr/dagre-react) to do my layout for me while sticking to the Om/React rendering model.)
+1. core.logic: I [rewrote buffalo.pl using core.logic's dcg package](src/buffaloe/grammar.cljs). (Actually, I had to use [an old fork](https://github.com/aamedina/cljs.core.logic) of core.logic which brings DCGs and some other stuff over to ClojureScript from the Clojure version.) Then I just call it with your input, get a parse tree, and [graph that](src/buffaloe/graph.cljs). (I wrote the [dagre-react library](https://github.com/osnr/dagre-react) to do my layout for me while sticking to the Om/React rendering model.)
 
 2. Prolog: Yes, this is actually a Prolog program running in your browser. No server at all. I [slightly modified](prolog/buffalo.pl) the original Prolog DCG code to cut out the tree drawing stuff, to reimplement some SWI Prolog standard library functions, and to accept input as command-line arguments.
 
