@@ -82,7 +82,7 @@
                                        (str/split #" "))))
                     " ")
           (dom/button #js {:onClick #(update-input! owner backend
-                                                    (str input " buffalo"))}
+                                                    (str (str/replace input "." "") " buffalo" "."))}
                       "+"))
         (dom/div #js {:style #js {:float "right"}}
           (dom/select #js {:value (name backend)
